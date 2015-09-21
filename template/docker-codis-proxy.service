@@ -1,0 +1,11 @@
+[Unit] 
+After=docker.service 
+Requires=docker.service 
+[Service] 
+TimeoutStartSec=0 
+Restart=always
+ExecStartPre=-/usr/bin/docker rm codis-proxy-projectid
+ExecStart=/usr/bin/docker run --name=codis-proxy-projectid --net=host -e PROXY_ADDR=19000 -e PROXY_HTTP_ADDR=11000 -e COORDINATOR=etcd -e DB_ADDR=10.12.1.105:4001 -e DASHBOARD_ADDR=10.12.1.101:18087 -e PROXY_ID=1 -e PRODUCTNAME=first -e PROXY_IP=10.12.1.101 -e CPU=4 goyoo/codis-proxy
+ExecStop=/usr/bin/docker kill codis-proxy-projectid
+[X-Fleet]
+MachineMetadata=role=proxy

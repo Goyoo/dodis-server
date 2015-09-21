@@ -1,0 +1,11 @@
+[Unit] 
+After=docker.service 
+Requires=docker.service 
+[Service] 
+TimeoutStartSec=0 
+Restart=always
+ExecStartPre=-/usr/bin/docker rm codis-dashboard-projectid
+ExecStart=/usr/bin/docker run --name=codis-dashboard-projectid  -p 18087:18087 -e COORDINATOR=etcd -e DB_ADDR=10.12.1.105:4001 -e DASHBOARD_ADDR=10.12.1.101:18087 -e PROXY_ID=1 -e PRODUCTNAME=first goyoo/codis-dashboard
+ExecStop=/usr/bin/docker kill codis-dashboard-projectid
+[X-Fleet]
+MachineMetadata=role=proxy

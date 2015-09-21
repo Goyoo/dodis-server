@@ -1,0 +1,12 @@
+[Unit] 
+Description=<%=description%>
+After=docker.service 
+Requires=docker.service 
+[Service] 
+TimeoutStartSec=0 
+ExecStartPre=sleep 5
+ExecStartPre=-/usr/bin/docker rm <%=config_name%>
+ExecStart=/usr/bin/docker run --name <%=config_name%> -e MAXMEMORY=<%=maxmemory%> -p <%=port%>:6379 dhub.yunpro.cn/kuizhi/codis-server
+ExecStop=/usr/bin/docker kill <%=config_name%>
+[X-Fleet]
+Conflicts=<%=name%>

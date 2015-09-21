@@ -1,0 +1,26 @@
+
+
+[Unit] 
+Description=docker-redis-test-1
+After=docker.service 
+Requires=docker.service 
+[Service] 
+TimeoutStartSec=0 
+ExecStartPre=sleep 5
+ExecStartPre=-/usr/bin/docker rm docker-redis-test@1.service
+ExecStart=/usr/bin/docker run --name docker-redis-test@1.service -e MAXMEMORY=1000000 -p 16379:6379 dhub.yunpro.cn/kuizhi/codis-server 
+ExecStop=/usr/bin/docker kill docker-redis-test@1.service; 
+[X-Fleet]
+Conflicts=<%=name%>
+
+[Unit] 
+After=docker.service 
+Requires=docker.service 
+[Service] 
+TimeoutStartSec=0 
+ExecStartPre=sleep 5
+ExecStartPre=-/usr/bin/docker rm docker-redis-test-%i
+ExecStart=/usr/bin/docker run --name docker-redis-test-%i -e MAXMEMORY=1000000 -p 16379:6379 goyoo/codis-server 
+ExecStop=/usr/bin/docker kill docker-redis-test-%i; 
+[X-Fleet]
+Conflicts=docker-redis-test@*.service
